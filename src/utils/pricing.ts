@@ -4,23 +4,26 @@ import { Bundle, Pool, Token } from '../types/schema'
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { exponentToBigDecimal, safeDiv } from '../utils/index'
 
+const CELO_PREVWETH_ADDRESS = '0x471ece3750da237f93b8e339c536989b8978a438'
 const USDC_WETH_03_POOL = '0x05efB437e4e97EfEa6450321eca8d7585A731369'
 
 // token where amounts should contribute to tracked volume and liquidity
-// usually tokens that many tokens are paired with s
+// usually tokens that many tokens are paired with
 export let WHITELIST_TOKENS: string[] = [
-  '0x765DE816845861e75A25fCA122bb6898B8B1282a', // CUSD
-  '0xef4229c8c3250C675F21BCefa42f58EfbfF6002a', // USDC
-  '0x471EcE3750Da237f93B8E339c536989b8978a438', // CELO
-  '0xD8763CBa276a3738E6DE85b4b3bF5FDed6D6cA73', // CEUR
-  '0xe8537a3d056DA446677B9E9d6c5dB704EaAb4787', // CREAL
-  '0x46c9757C5497c5B1f2eb73aE79b6B67D119B0B58', // PACT
-  '0x17700282592D6917F6A73D0bF8AcCf4D578c131e', // MOO
+  '0x765de816845861e75a25fca122bb6898b8b1282a', // CUSD
+  '0xef4229c8c3250c675f21bcefa42f58efbff6002a', // USDC
+  '0x471ece3750da237f93b8e339c536989b8978a438', // CELO
+  '0xd8763cba276a3738e6de85b4b3bf5fded6d6ca73', // CEUR
+  '0xe8537a3d056da446677b9e9d6c5db704eaab4787', // CREAL
+  '0x46c9757c5497c5b1f2eb73ae79b6b67d119b0b58', // PACT
+  '0x17700282592d6917f6a73d0bf8accf4d578c131e', // MOO
+  '0x66803fb87abd4aac3cbb3fad7c3aa01f6f3fb207', // Portal Eth
+  '0xbaab46e28388d2779e6e31fd00cf0e5ad95e327b', // WBTC
 ]
 
 let STABLE_COINS: string[] = [
-    "0x765DE816845861e75A25fCA122bb6898B8B1282a", // CUSD
-  '0xef4229c8c3250C675F21BCefa42f58EfbfF6002a', //USDC
+    "0x765de816845861e75a25fca122bb6898b8b1282a", // CUSD
+  '0xef4229c8c3250c675f21bcefa42f58efbff6002a', //USDC
 ]
 
 let MINIMUM_ETH_LOCKED = BigDecimal.fromString('60')
@@ -42,6 +45,8 @@ export function getEthPriceInUSD(): BigDecimal {
   // fetch eth prices for each stablecoin
   let usdcPool = Pool.load(USDC_WETH_03_POOL) // dai is token0
   if (usdcPool !== null) {
+      // if (usdcPool.token0.toString().toLowerCase() == CELO_PREVWETH_ADDRESS.toString().toLowerCase()) {
+      //   return usdcPool.token0Price
     return usdcPool.token0Price
   } else {
     return ZERO_BD
@@ -53,6 +58,9 @@ export function getEthPriceInUSD(): BigDecimal {
  * @todo update to be derived ETH (add stablecoin estimates)
  **/
 export function findEthPerToken(token: Token): BigDecimal {
+  if (token.id == CELO_PREVWETH_ADDRESS) {
+    return ONE_BD
+  }
   let whiteList = token.whitelistPools
   // for now just take USD from pool with greatest TVL
   // need to update this to actually detect best rate based on liquidity distribution
