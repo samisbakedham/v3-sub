@@ -5,7 +5,7 @@ import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { exponentToBigDecimal, safeDiv } from '../utils/index'
 
 const CELO_PREVWETH_ADDRESS = '0x471ece3750da237f93b8e339c536989b8978a438'
-const USDC_WETH_03_POOL = '0x05efb437e4e97efea6450321eca8d7585a731369'
+const CUSD_CELO_POOL_ADDRESS = '0x05efb437e4e97efea6450321eca8d7585a731369'
 
 // token where amounts should contribute to tracked volume and liquidity
 // usually tokens that many tokens are paired with
@@ -22,8 +22,8 @@ export let WHITELIST_TOKENS: string[] = [
 ]
 
 let STABLE_COINS: string[] = [
-    "0x765de816845861e75a25fca122bb6898b8b1282a", // CUSD
-  '0xef4229c8c3250c675f21bcefa42f58efbff6002a', //USDC
+    '0x765de816845861e75a25fca122bb6898b8b1282a', // CUSD
+    '0xef4229c8c3250c675f21bcefa42f58efbff6002a', //USDC
 ]
 
 let MINIMUM_ETH_LOCKED = BigDecimal.fromString('60')
@@ -43,11 +43,11 @@ export function sqrtPriceX96ToTokenPrices(sqrtPriceX96: BigInt, token0: Token, t
 
 export function getEthPriceInUSD(): BigDecimal {
   // fetch eth prices for each stablecoin
-  let usdcPool = Pool.load(USDC_WETH_03_POOL) // dai is token0
+  let usdcPool = Pool.load(CUSD_CELO_POOL_ADDRESS) // dai is token0
   if (usdcPool !== null) {
       // if (usdcPool.token0.toString().toLowerCase() == CELO_PREVWETH_ADDRESS.toString().toLowerCase()) {
       //   return usdcPool.token0Price
-    return usdcPool.token0Price
+    return usdcPool.token1Price
   } else {
     return ZERO_BD
   }
