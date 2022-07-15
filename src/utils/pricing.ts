@@ -4,26 +4,25 @@ import { Bundle, Pool, Token } from '../types/schema'
 import { BigDecimal, BigInt } from '@graphprotocol/graph-ts'
 import { exponentToBigDecimal, safeDiv } from '../utils/index'
 
-const CELO_PREVWETH_ADDRESS = '0x471ece3750da237f93b8e339c536989b8978a438'
-const CUSD_CELO_POOL_ADDRESS = '0x05efb437e4e97efea6450321eca8d7585a731369'
+const WCNDL_PREVWETH_ADDRESS = '0x85FA00f55492B0437b3925381fAaf0E024747627'
+const DAI_WCNDL_POOL_ADDRESS = '0x74017AF9F563d4179e9f6c35457CD09999C7DE45'
 
 // token where amounts should contribute to tracked volume and liquidity
 // usually tokens that many tokens are paired with
 export let WHITELIST_TOKENS: string[] = [
-  '0x765de816845861e75a25fca122bb6898b8b1282a', // CUSD
-  '0xef4229c8c3250c675f21bcefa42f58efbff6002a', // USDC
-  '0x471ece3750da237f93b8e339c536989b8978a438', // CELO
-  '0xd8763cba276a3738e6de85b4b3bf5fded6d6ca73', // CEUR
-  '0xe8537a3d056da446677b9e9d6c5db704eaab4787', // CREAL
+  '0xad43669cbAC863e33449d423261E525de8da0Ff4', // DAI
+  '0x95A0A7953F9292838C0614D690005D5c716E718E', // USDC
+  '0x85FA00f55492B0437b3925381fAaf0E024747627', // WCNDL
+  '0x5c17C48F127D6aE5794b2404F1F8A5CeED419eDf', // ZED
+  '0xa018034190943D6c8E10218d9F8E8Af491272411', // SHIBA
   '0x46c9757c5497c5b1f2eb73ae79b6b67d119b0b58', // PACT
-  '0x17700282592d6917f6a73d0bf8accf4d578c131e', // MOO
-  '0x66803fb87abd4aac3cbb3fad7c3aa01f6f3fb207', // Portal Eth
-  '0xbaab46e28388d2779e6e31fd00cf0e5ad95e327b', // WBTC
+  '0xb750990F953B36F806d0327678eCFB4eEFd16979', // WETH
+  '0x54D94162d5d7DAa54dBdB2D37F8cdA71D7d6795c', // USDT
 ]
 
 let STABLE_COINS: string[] = [
-    '0x765de816845861e75a25fca122bb6898b8b1282a', // CUSD
-    '0xef4229c8c3250c675f21bcefa42f58efbff6002a', //USDC
+    '0xad43669cbAC863e33449d423261E525de8da0Ff4', // DAI
+    '0x95A0A7953F9292838C0614D690005D5c716E718E', //USDC
 ]
 
 let MINIMUM_ETH_LOCKED = BigDecimal.fromString('60')
@@ -43,9 +42,9 @@ export function sqrtPriceX96ToTokenPrices(sqrtPriceX96: BigInt, token0: Token, t
 
 export function getEthPriceInUSD(): BigDecimal {
   // fetch eth prices for each stablecoin
-  let usdcPool = Pool.load(CUSD_CELO_POOL_ADDRESS) // dai is token0
+  let usdcPool = Pool.load(DAI_WCNDL_POOL_ADDRESS) // dai is token0
   if (usdcPool !== null) {
-      // if (usdcPool.token0.toString().toLowerCase() == CELO_PREVWETH_ADDRESS.toString().toLowerCase()) {
+      // if (usdcPool.token0.toString().toLowerCase() == WCNDL_PREVWETH_ADDRESS.toString().toLowerCase()) {
       //   return usdcPool.token0Price
     return usdcPool.token1Price
   } else {
@@ -58,7 +57,7 @@ export function getEthPriceInUSD(): BigDecimal {
  * @todo update to be derived ETH (add stablecoin estimates)
  **/
 export function findEthPerToken(token: Token): BigDecimal {
-  if (token.id == CELO_PREVWETH_ADDRESS) {
+  if (token.id == WCNDL_PREVWETH_ADDRESS) {
     return ONE_BD
   }
   let whiteList = token.whitelistPools
