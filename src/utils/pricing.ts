@@ -25,7 +25,7 @@ let STABLE_COINS: string[] = [
     '0x95A0A7953F9292838C0614D690005D5c716E718E', //USDC
 ]
 
-let MINIMUM_ETH_LOCKED = BigDecimal.fromString('60')
+let MINIMUM_ETH_LOCKED = BigDecimal.fromString('0')
 
 let Q192 = 2 ** 192
 export function sqrtPriceX96ToTokenPrices(sqrtPriceX96: BigInt, token0: Token, token1: Token): BigDecimal[] {
